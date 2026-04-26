@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes" />
+  <title>تكنوسوفت - للخدمات الالكترونية المصغرة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #eef2f9 0%, #d9e2ef 100%);
+      padding-bottom: 40px;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 16px; }
+    header {
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+      border-radius: 0 0 32px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 12px 20px;
+    }
+    .logo {
+      font-size: clamp(1.2rem,5vw,1.6rem);
+      font-weight: 800;
+      background: linear-gradient(135deg,#1f3c88,#4f46e5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    nav a {
+      margin-right: 12px;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+    nav a:hover { color: #2563eb; }
+    @media (max-width:480px){
+      nav a { margin-right:8px; font-size:0.85rem; }
+      .nav { justify-content: center; text-align: center; }
+    }
+    .hero {
+      background: linear-gradient(105deg,#1f3c88,#1e2f6e);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      border-radius: 40px;
+      margin: 24px 0 40px;
+    }
+    .hero h1 { font-size: clamp(1.5rem,6vw,2.2rem); }
+    .hero p { font-size: clamp(0.85rem,4vw,1rem); margin-bottom: 24px; }
+    
+    /* زر الاستشارة المجانية */
+    .btn-consult {
+      background: linear-gradient(105deg, #f59e0b, #d97706);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 60px;
+      font-weight: 800;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      margin-top: 8px;
+    }
+    .btn-consult:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+      background: linear-gradient(105deg, #f59e0b, #ea580c);
+    }
+    .btn-consult i {
+      font-size: 1.2rem;
+    }
+    .btn-consult-outline {
+      background: transparent;
+      border: 2px solid #f59e0b;
+      color: #f59e0b;
+      box-shadow: none;
+    }
+    .btn-consult-outline:hover {
+      background: #f59e0b;
+      color: white;
+    }
+    
+    .filters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 30px;
+      background: white;
+      padding: 18px 22px;
+      border-radius: 60px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      align-items: center;
+      justify-content: center;
+    }
+    .search-box {
+      flex: 2;
+      min-width: 180px;
+      display: flex;
+      align-items: center;
+      background: #f1f5f9;
+      border-radius: 60px;
+      padding: 5px 15px;
+      gap: 8px;
+    }
+    .search-box i { color: #1f3c88; }
+    .search-box input {
+      border: none;
+      background: transparent;
+      padding: 12px 0;
+      font-family: inherit;
+      font-size: 0.95rem;
+      width: 100%;
+      outline: none;
+    }
+    .combo-box {
+      flex: 1;
+      min-width: 180px;
+    }
+    .combo-box select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 60px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      font-family: inherit;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+    }
+    /* زر الاستشارة داخل شريط الفلاتر */
+    .consult-btn-wrapper {
+      flex-shrink: 0;
+    }
+    .btn-consult-small {
+      padding: 10px 24px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    @media (max-width:640px){
+      .filters-bar { flex-direction: column; align-items: stretch; border-radius: 32px; }
+      .search-box, .combo-box, .consult-btn-wrapper { width: 100%; }
+      .btn-consult-small { width: 100%; justify-content: center; }
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px,1fr));
+      gap: 24px;
+      margin: 20px 0;
+    }
+    .service-card {
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px -12px rgba(0,0,0,0.12);
+      transition: transform 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .service-card:hover { transform: translateY(-5px); }
+    .service-main-image { width: 100%; height: 180px; object-fit: cover; background: #f1f5f9; }
+    .service-content { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+    .service-name { font-size: 1.3rem; font-weight: 800; text-align: center; margin-bottom: 8px; }
+    .price-tag {
+      font-size: 1.4rem; font-weight: 800; color: #1f3c88; background: #e0f2fe;
+      padding: 4px 12px; border-radius: 60px; margin: 8px auto; display: inline-block;
+    }
+    .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+    .rating-info { background: #fef9e3; padding: 4px 10px; border-radius: 40px; display: flex; gap: 6px; }
+    .stars { color: #fbbf24; }
+    .description-wrapper {
+      background: #f8fafc; padding: 10px 12px; border-radius: 20px; margin: 12px 0;
+      border-right: 3px solid #2563eb; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    }
+    .short-desc { font-size: 0.85rem; color: #334155; flex: 1; }
+    .more-link { background: none; border: none; color: #2563eb; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .card-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: auto; padding-top: 12px; }
+    .btn-order, .btn-trial {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      text-decoration: none; padding: 10px; border-radius: 60px; font-weight: 700; width: 100%;
+      transition: 0.2s;
+    }
+    .btn-whatsapp { background: linear-gradient(105deg,#25D366,#128C7E); color: white; }
+    .btn-khamsat { background: linear-gradient(105deg,#10b981,#059669); color: white; }
+    .btn-trial { background: linear-gradient(105deg,#f59e0b,#d97706); color: white; }
+    
+    /* مودال الاستشارة */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.active {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal-content {
+      background: white;
+      max-width: 550px;
+      width: 90%;
+      border-radius: 48px;
+      overflow: hidden;
+      box-shadow: 0 40px 60px -30px rgba(0,0,0,0.5);
+      animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #1f3c88, #2d4a9e);
+      color: white;
+      padding: 25px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .close-modal {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+    .close-modal:hover {
+      background: rgba(255,255,255,0.4);
+      transform: rotate(90deg);
+    }
+    .modal-body {
+      padding: 30px;
+    }
+    .modal-body .form-group {
+      margin-bottom: 20px;
+    }
+    .modal-body .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1f3c88;
+    }
+    .modal-body .form-group input,
+    .modal-body .form-group select,
+    .modal-body .form-group textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 40px;
+      border: 1px solid #e2e8f0;
+      font-family: inherit;
+      background: #f8fafc;
+      transition: 0.2s;
+    }
+    .modal-body .form-group input:focus,
+    .modal-body .form-group select:focus,
+    .modal-body .form-group textarea:focus {
+      outline: none;
+      border-color: #1f3c88;
+      box-shadow: 0 0 0 3px rgba(31,60,136,0.1);
+    }
+    .modal-body .phone-wrapper {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .modal-body .phone-wrapper select {
+      width: auto;
+      min-width: 140px;
+    }
+    .modal-body .phone-wrapper input {
+      flex: 1;
+    }
+    .submit-consult {
+      background: linear-gradient(105deg, #f59e0b, #d97706);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 60px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.2s;
+    }
+    .submit-consult:hover {
+      transform: scale(1.02);
+      background: #ea580c;
+    }
+    .consult-message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    
+    .detail-view {
+      background: rgba(255,255,255,0.97);
+      border-radius: 48px;
+      box-shadow: 0 35px 60px -20px rgba(0,0,0,0.35);
+      margin: 20px auto;
+      padding: 0;
+      max-width: 1200px;
+      width: 95%;
+      display: none;
+      overflow: hidden;
+      backdrop-filter: blur(2px);
+    }
+    .detail-view.active { display: block; animation: fadeSlideUp 0.5s cubic-bezier(0.2,0.9,0.4,1.1); }
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .detail-header {
+      background: linear-gradient(135deg,#1f3c88,#2d4a9e);
+      padding: 25px 35px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      color: white;
+    }
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 10px 24px;
+      border-radius: 60px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      gap: 8px;
+      transition: 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.3); transform: translateX(-4px); }
+    .detail-name {
+      font-size: clamp(1.6rem,5vw,2.4rem);
+      font-weight: 800;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .detail-inner { padding: 35px 40px; }
+    @media (max-width:768px){
+      .detail-inner { padding: 25px 20px; }
+      .detail-header { padding: 20px 25px; }
+    }
+    .price-stats-card {
+      background: linear-gradient(145deg,#fff,#f8fafc);
+      border-radius: 32px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 12px 25px -12px rgba(0,0,0,0.1);
+      border: 1px solid rgba(37,99,235,0.1);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .detail-price {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(105deg,#1f3c88,#4f46e5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 5px;
+    }
+    .detail-stats {
+      display: flex;
+      gap: 30px;
+      background: #eef2ff;
+      padding: 12px 28px;
+      border-radius: 80px;
+    }
+    .stat-item { font-weight: 600; display: flex; align-items: center; gap: 8px; color: #1e293b; }
+    .stat-item i { font-size: 1.2rem; color: #1f3c88; }
+    .detail-desc {
+      background: #f8fafc;
+      padding: 30px;
+      border-radius: 32px;
+      margin: 30px 0;
+      line-height: 1.8;
+      font-size: 1.05rem;
+      border-right: 6px solid #2563eb;
+    }
+    .detail-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
+      gap: 18px;
+      margin: 35px 0;
+    }
+    .detail-images img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: all 0.25s;
+      border: 3px solid white;
+      box-shadow: 0 12px 20px -12px rgba(0,0,0,0.2);
+      background: #f1f5f9;
+    }
+    .detail-images img:hover { transform: scale(1.02); border-color: #2563eb; }
+    .reviews-section { margin: 45px 0 30px; }
+    .reviews-title {
+      font-size: 1.7rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #e2e8f0;
+    }
+    .reviews-title i { color: #fbbf24; }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+      gap: 24px;
+    }
+    .review-card {
+      background: #fff;
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      border: 1px solid #eef2ff;
+    }
+    .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .reviewer-name { font-weight: 800; color: #1f3c88; font-size: 1.05rem; }
+    .review-stars { color: #fbbf24; font-size: 0.9rem; letter-spacing: 2px; }
+    .review-comment { color: #334155; line-height: 1.6; }
+    .review-form {
+      background: linear-gradient(145deg,#fff9ef,#fff5e6);
+      border-radius: 36px;
+      padding: 30px;
+      margin-top: 40px;
+      border: 1px solid #fde047;
+    }
+    .review-form h4 {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      color: #854d0e;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .form-group { margin-bottom: 18px; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 40px;
+      border: 1px solid #e2e8f0;
+      font-family: inherit;
+      background: white;
+      transition: 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none;
+      border-color: #1f3c88;
+      box-shadow: 0 0 0 3px rgba(31,60,136,0.1);
+    }
+    .phone-wrapper {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .phone-wrapper select {
+      width: auto;
+      min-width: 140px;
+      flex-shrink: 0;
+      background-color: white;
+    }
+    .phone-wrapper select option {
+      background-size: 20px;
+      background-position: 5px center;
+      padding-right: 30px;
+      background-repeat: no-repeat;
+    }
+    .phone-wrapper select option[value="+963"] {
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Flag_of_the_Syrian_revolution.svg/30px-Flag_of_the_Syrian_revolution.svg.png');
+    }
+    .phone-wrapper input { flex: 1; }
+    .small-note { display: block; margin-top: 5px; font-size: 0.75rem; color: #666; }
+    @media (max-width:480px){
+      .phone-wrapper { flex-direction: column; align-items: stretch; }
+      .phone-wrapper select { width: 100%; }
+    }
+    .submit-review {
+      background: linear-gradient(105deg,#1f3c88,#2e4a9e);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .submit-review:hover { transform: scale(1.02); background: #0f2a63; }
+    .detail-buttons {
+      display: flex;
+      gap: 20px;
+      margin-top: 40px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-whatsapp-large, .btn-khamsat-large, .btn-trial-large {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px 24px;
+      border-radius: 80px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.05rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .btn-whatsapp-large { background: linear-gradient(105deg,#25D366,#128C7E); color: white; }
+    .btn-khamsat-large { background: linear-gradient(105deg,#10b981,#059669); color: white; }
+    .btn-trial-large { background: linear-gradient(105deg,#f59e0b,#d97706); color: white; }
+    .btn-whatsapp-large:hover, .btn-khamsat-large:hover, .btn-trial-large:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.02);
+    }
+    @media (max-width:550px){
+      .btn-whatsapp-large, .btn-khamsat-large, .btn-trial-large { min-width: 100%; }
+    }
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      cursor: zoom-out;
+    }
+    .lightbox img { max-width: 90%; max-height: 90%; border-radius: 24px; }
+    #about { background: white; border-radius: 32px; padding: 30px 20px; margin: 30px 0; text-align: center; }
+    .footer { text-align: center; margin-top: 40px; color: #334155; font-size: 0.85rem; }
+    .no-results { text-align: center; padding: 50px 20px; background: white; border-radius: 40px; margin: 20px 0; }
+    .results-count { font-size: 0.9rem; color: #475569; margin-bottom: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <div class="logo">تكنوسوفت للبرمجة والتصميم</div>
+    <nav>
+      <a id="homeLink">الرئيسية</a>
+      <a id="servicesLink">الخدمات</a>
+      <a id="aboutLink">من نحن</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>حلول رقمية ذكية بأسعار تنافسية</h1>
+    <p>معنا ستحول تعاملاتك التقليدية إلى الكترونية - نفذ أعمالك بسرعة واحترافية أكبر</p>
+    <button class="btn-consult" id="openConsultBtnHero"><i class="fas fa-headset"></i> طلب استشارة مجانية</button>
+  </div>
+</section>
+
+<section id="servicesSection">
+  <div class="container">
+    <div class="filters-bar">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="ابحث عن خدمة..." autocomplete="off">
+      </div>
+      <div class="combo-box">
+        <select id="filterSelect">
+          <option value="all">📋 جميع التصنيفات</option>
+        </select>
+      </div>
+      <div class="consult-btn-wrapper">
+        <button class="btn-consult btn-consult-small btn-consult-outline" id="openConsultBtnFilter"><i class="fas fa-comments"></i> استشارة مجانية</button>
+      </div>
+    </div>
+    <div id="resultsCount" class="results-count"></div>
+    <div id="services-container" class="services-grid"><div class="loading"><i class="fas fa-spinner fa-pulse"></i> جاري التحميل...</div></div>
+  </div>
+</section>
+
+<!-- مودال الاستشارة المجانية -->
+<div id="consultModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-headset"></i> استشارة مجانية</h3>
+      <button class="close-modal" id="closeModalBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="consultForm">
+        <div class="form-group">
+          <label>الاسم الكامل *</label>
+          <input type="text" id="consultName" placeholder="أدخل اسمك" required>
+        </div>
+        <div class="form-group">
+          <label>البريد الإلكتروني *</label>
+          <input type="email" id="consultEmail" placeholder="example@domain.com" required>
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف (للتواصل السريع)</label>
+          <div class="phone-wrapper">
+            <select id="consultCountryCode">
+              <option value="+963">+963 سوريا</option>
+              <option value="+966">🇸🇦 +966 السعودية</option>
+              <option value="+20">🇪🇬 +20 مصر</option>
+              <option value="+971">🇦🇪 +971 الإمارات</option>
+              <option value="+965">🇰🇼 +965 الكويت</option>
+              <option value="+962">🇯🇴 +962 الأردن</option>
+              <option value="+970">🇵🇸 +970 فلسطين</option>
+              <option value="+974">🇶🇦 +974 قطر</option>
+              <option value="+973">🇧🇭 +973 البحرين</option>
+              <option value="+968">🇴🇲 +968 عمان</option>
+              <option value="+961">🇱🇧 +961 لبنان</option>
+              <option value="+967">🇾🇪 +967 اليمن</option>
+              <option value="+964">🇮🇶 +964 العراق</option>
+              <option value="+218">🇱🇾 +218 ليبيا</option>
+              <option value="+216">🇹🇳 +216 تونس</option>
+              <option value="+213">🇩🇿 +213 الجزائر</option>
+              <option value="+212">🇲🇦 +212 المغرب</option>
+              <option value="+249">🇸🇩 +249 السودان</option>
+              <option value="+1">🇺🇸 +1 أمريكا</option>
+              <option value="+44">🇬🇧 +44 بريطانيا</option>
+              <option value="+90">🇹🇷 +90 تركيا</option>
+            </select>
+            <input type="tel" id="consultPhone" placeholder="رقم الهاتف">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>نوع الاستشارة أو الخدمة المطلوبة *</label>
+          <select id="consultType" required>
+            <option value="">-- اختر --</option>
+            <option value="برمجة وتطوير">برمجة وتطوير</option>
+            <option value="تصميم جرافيك">تصميم جرافيك</option>
+            <option value="تصميم مواقع">تصميم مواقع</option>
+            <option value="خدمة غير موجودة">خدمة غير موجودة (أخبرنا بها)</option>
+            <option value="استشارة عامة">استشارة عامة</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>تفاصيل طلبك أو استفسارك *</label>
+          <textarea id="consultMessage" rows="4" placeholder="اكتب هنا ما تحتاج مساعدة فيه أو الخدمة التي تبحث عنها..." required></textarea>
+        </div>
+        <button type="submit" class="submit-consult"><i class="fas fa-paper-plane"></i> إرسال طلب الاستشارة</button>
+        <div id="consultFormMessage" class="consult-message"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="detailView" class="detail-view container">
+  <div class="detail-header">
+    <button class="back-btn" id="backToServicesBtn"><i class="fas fa-arrow-right"></i> العودة للخدمات</button>
+    <span class="detail-name" id="detailName"></span>
+  </div>
+  <div class="detail-inner">
+    <div class="price-stats-card">
+      <div class="detail-price" id="detailPrice"></div>
+      <div class="detail-stats">
+        <div class="stat-item"><i class="fas fa-users"></i> <span id="detailUsers"></span> عميل</div>
+        <div class="stat-item"><i class="fas fa-star" style="color:#fbbf24;"></i> <span id="detailRating"></span> / 5</div>
+      </div>
+    </div>
+    <div class="detail-desc" id="detailDesc"></div>
+    <div id="detailImagesContainer" class="detail-images"></div>
+    <div class="reviews-section">
+      <div class="reviews-title">
+        <i class="fas fa-comment-dots"></i> 
+        <span>آراء وتقييمات العملاء</span>
+      </div>
+      <div id="reviewsContainer" class="reviews-grid"></div>
+      
+      <div class="review-form">
+        <h4><i class="fas fa-star"></i> أضف تقييمك للخدمة</h4>
+        <form id="customerReviewForm">
+          <div class="form-group"><input type="text" id="reviewerName" placeholder="الاسم الكامل" required></div>
+          <div class="form-group"><input type="email" id="reviewerEmail" placeholder="البريد الإلكتروني" required></div>
+          <div class="form-group">
+            <label>رقم الهاتف (اختياري - للإدارة فقط)</label>
+            <div class="phone-wrapper">
+              <select id="countryCode">
+                <option value="+963">+963 سوريا</option>
+                <option value="+966">🇸🇦 +966 السعودية</option>
+                <option value="+20">🇪🇬 +20 مصر</option>
+                <option value="+971">🇦🇪 +971 الإمارات</option>
+                <option value="+965">🇰🇼 +965 الكويت</option>
+                <option value="+962">🇯🇴 +962 الأردن</option>
+                <option value="+970">🇵🇸 +970 فلسطين</option>
+                <option value="+974">🇶🇦 +974 قطر</option>
+                <option value="+973">🇧🇭 +973 البحرين</option>
+                <option value="+968">🇴🇲 +968 عمان</option>
+                <option value="+961">🇱🇧 +961 لبنان</option>
+                <option value="+967">🇾🇪 +967 اليمن</option>
+                <option value="+964">🇮🇶 +964 العراق</option>
+                <option value="+218">🇱🇾 +218 ليبيا</option>
+                <option value="+216">🇹🇳 +216 تونس</option>
+                <option value="+213">🇩🇿 +213 الجزائر</option>
+                <option value="+212">🇲🇦 +212 المغرب</option>
+                <option value="+249">🇸🇩 +249 السودان</option>
+                <option value="+1">🇺🇸 +1 أمريكا</option>
+                <option value="+44">🇬🇧 +44 بريطانيا</option>
+                <option value="+90">🇹🇷 +90 تركيا</option>
+              </select>
+              <input type="tel" id="reviewerPhone" placeholder="رقم الهاتف">
+            </div>
+            <small class="small-note">سيتم حفظ الرقم مع رمز الدولة (مثال: +963912345678)</small>
+          </div>
+          <div class="form-group">
+            <label>التقييم بالنجوم:</label>
+            <select id="reviewRating" required>
+              <option value="5">★★★★★ (5 نجوم)</option>
+              <option value="4">★★★★☆ (4 نجوم)</option>
+              <option value="3">★★★☆☆ (3 نجوم)</option>
+              <option value="2">★★☆☆☆ (2 نجوم)</option>
+              <option value="1">★☆☆☆☆ (1 نجمة)</option>
+            </select>
+          </div>
+          <div class="form-group"><textarea id="reviewComment" rows="3" placeholder="شارك رأيك في الخدمة ..." required></textarea></div>
+          <button type="submit" class="submit-review"><i class="fas fa-paper-plane"></i> إرسال التقييم</button>
+        </form>
+        <div id="reviewFormMessage" style="margin-top: 12px;"></div>
+      </div>
+    </div>
+    <div class="detail-buttons" id="detailButtonsContainer"></div>
+  </div>
+</div>
+
+<section id="about"><div class="container"><h2 style="color:#1f3c88;">من نحن؟</h2><p>تكنوسوفت - فريق تقني يسعى لتقديم أفضل الحلول الرقمية بأسرع الأوقات وأفضل الأسعار</p><p>معنا الحلول الالكترونية أسهل - أسرع - أفضل </p></div></section>
+<footer class="footer"><p>© 2026 تكنوسوفت – جميع الحقوق محفوظة</p></footer>
+
+<script>
+  (function() {
+    // ========== إعدادات Google Sheets ==========
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOtFRmALmt99yrwUQDKqkKq_0ReEXoqjW5ofoplgMsXE2tZCwZvgal0tOwWk7zbEqI/exec';
+    const API_KEY = 'AIzaSyB2SJ_jCYJay6LzmXG87bdLz5PKHB0_uNk';
+    const SPREADSHEET_ID = '1piP1JUcszA584HRqiKKKCjSVSdBSTNkzn7lbkbh9gM8';
+    const SERVICES_SHEET = 'Amin1';
+    const REVIEWS_SHEET = 'Amin2';
+    const CATEGORIES_SHEET = 'Amin3';
+    const RANGE = `${SERVICES_SHEET}!A:Q`;
+
+    let servicesData = [];
+    let currentServiceIndex = null;
+    let categoriesList = [];
+
+    // ========== دالة تحويل الروابط (خاصة بـ Imgur و Google Drive) ==========
+    function getDirectImageUrl(url) {
+      if (!url || typeof url !== 'string') return null;
+      let clean = url.trim();
+      if (clean === '') return null;
+      
+      const driveMatch = clean.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if (driveMatch && driveMatch[1]) {
+        return `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
+      }
+      const driveUcMatch = clean.match(/drive\.google\.com\/uc\?export=view&id=([a-zA-Z0-9_-]+)/);
+      if (driveUcMatch && driveUcMatch[1]) {
+        return clean;
+      }
+      const driveOpenMatch = clean.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
+      if (driveOpenMatch && driveOpenMatch[1]) {
+        return `https://drive.google.com/uc?export=view&id=${driveOpenMatch[1]}`;
+      }
+      const driveUcOld = clean.match(/drive\.google\.com\/uc\?id=([a-zA-Z0-9_-]+)/);
+      if (driveUcOld && driveUcOld[1]) {
+        return `https://drive.google.com/uc?export=view&id=${driveUcOld[1]}`;
+      }
+      
+      const imgurGallery = clean.match(/imgur\.com\/gallery\/([a-zA-Z0-9]+)/);
+      if (imgurGallery && imgurGallery[1]) {
+        return `https://i.imgur.com/${imgurGallery[1]}.jpg`;
+      }
+      const imgurAlbum = clean.match(/imgur\.com\/a\/([a-zA-Z0-9]+)/);
+      if (imgurAlbum && imgurAlbum[1]) {
+        return `https://i.imgur.com/${imgurAlbum[1]}.jpg`;
+      }
+      const imgurDirect = clean.match(/i\.imgur\.com\/([a-zA-Z0-9]+)\.(jpg|png|gif|jpeg|webp)/);
+      if (imgurDirect && imgurDirect[1]) {
+        return `https://i.imgur.com/${imgurDirect[1]}.${imgurDirect[2]}`;
+      }
+      const imgurShort = clean.match(/imgur\.com\/([a-zA-Z0-9]+)(\?|$)/);
+      if (imgurShort && imgurShort[1]) {
+        return `https://i.imgur.com/${imgurShort[1]}.jpg`;
+      }
+      
+      if (clean.startsWith('http') && (clean.includes('.jpg') || clean.includes('.png') || clean.includes('.gif') || clean.includes('.jpeg') || clean.includes('.webp'))) {
+        return clean;
+      }
+      
+      if (/^[a-zA-Z0-9]{5,}$/.test(clean)) {
+        return `https://i.imgur.com/${clean}.jpg`;
+      }
+      
+      return null;
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+    function getFirstWords(text, wordCount = 15) {
+      if (!text) return '';
+      const words = text.trim().split(/\s+/);
+      if (words.length <= wordCount) return text;
+      return words.slice(0, wordCount).join(' ') + '...';
+    }
+
+    // ========== جلب التصنيفات من Amin3 ==========
+    async function loadCategoriesFromSheet() {
+      try {
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${CATEGORIES_SHEET}!A:A?key=${API_KEY}`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error();
+        const data = await resp.json();
+        const rows = data.values || [];
+        let categories = [];
+        let startRow = (rows[0] && rows[0][0] && (rows[0][0].includes('تصنيف') || rows[0][0].includes('Category'))) ? 1 : 0;
+        for (let i = startRow; i < rows.length; i++) {
+          let val = rows[i][0];
+          if (val && val.trim()) categories.push(val.trim());
+        }
+        if (categories.length === 0) categories = ['برمجة', 'تصميم', 'تسويق', 'استشارات'];
+        return categories;
+      } catch(e) { return ['برمجة', 'تصميم', 'تسويق', 'استشارات']; }
+    }
+
+    function populateComboBox(categories) {
+      const select = document.getElementById('filterSelect');
+      if (!select) return;
+      select.innerHTML = '<option value="all">📋 جميع التصنيفات</option>';
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+      });
+      categoriesList = categories;
+    }
+
+    function filterServices(services, searchTerm, selectedCategory) {
+      const term = searchTerm.trim().toLowerCase();
+      return services.filter(service => {
+        let matchSearch = term === '' || service.name.toLowerCase().includes(term) || service.desc.toLowerCase().includes(term);
+        let matchCategory = selectedCategory === 'all' || service.category === selectedCategory;
+        return matchSearch && matchCategory;
+      });
+    }
+
+    function updateResultsCount(filtered, total) {
+      const div = document.getElementById('resultsCount');
+    }
+
+    function parseManualReviews(raw) {
+      if (!raw || typeof raw !== 'string') return [];
+      return raw.split(';').filter(e => e.trim()).map(entry => {
+        const parts = entry.split(':');
+        if (parts.length >= 3) return { name: parts[0].trim(), comment: parts[1].trim(), stars: parseFloat(parts[2]) };
+        return { name: 'عميل', comment: entry.trim(), stars: 5 };
+      });
+    }
+
+    async function fetchCustomerReviews(serviceName) {
+      try {
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${REVIEWS_SHEET}!A:G?key=${API_KEY}`;
+        const resp = await fetch(url);
+        if (!resp.ok) return [];
+        const data = await resp.json();
+        const rows = data.values || [];
+        if (rows.length < 2) return [];
+        const reviews = [];
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          if (row[0] === serviceName) {
+            reviews.push({ name: row[1] || 'زائر', comment: row[3] || '', stars: parseFloat(row[4]) || 5, phone: row[6] || '' });
+          }
+        }
+        return reviews;
+      } catch(e) { return []; }
+    }
+
+    async function getServiceAverageRating(service) {
+      const manual = parseManualReviews(service.reviewsRaw);
+      const customer = await fetchCustomerReviews(service.name);
+      const all = [...manual.map(r => r.stars), ...customer.map(r => r.stars)];
+      if (all.length === 0) return parseFloat(service.ratingRaw) || 5;
+      return Math.min(5, Math.max(0, all.reduce((a,b) => a+b, 0) / all.length));
+    }
+
+    async function getAllReviews(service) {
+      const manual = parseManualReviews(service.reviewsRaw);
+      const customer = await fetchCustomerReviews(service.name);
+      return [...manual, ...customer.map(({name, comment, stars}) => ({name, comment, stars}))];
+    }
+
+    function showLightbox(src) { 
+      const lb = document.createElement('div'); 
+      lb.className = 'lightbox'; 
+      lb.innerHTML = `<img src="${src}">`; 
+      lb.onclick = () => lb.remove(); 
+      document.body.appendChild(lb); 
+    }
+    window.showLightbox = showLightbox;
+
+    async function renderServicesGridWithFilter() {
+      if (!servicesData.length) {
+        document.getElementById('services-container').innerHTML = '<div class="empty">لا توجد خدمات</div>';
+        updateResultsCount(0,0);
+        return;
+      }
+      const searchTerm = document.getElementById('searchInput')?.value || '';
+      const selectedCategory = document.getElementById('filterSelect')?.value || 'all';
+      const filtered = filterServices(servicesData, searchTerm, selectedCategory);
+      updateResultsCount(filtered.length, servicesData.length);
+      if (filtered.length === 0) {
+        document.getElementById('services-container').innerHTML = '<div class="no-results"><i class="fas fa-search"></i> لا توجد خدمات تطابق البحث أو التصنيف</div>';
+        return;
+      }
+      let html = '';
+      for (let idx = 0; idx < filtered.length; idx++) {
+        const s = filtered[idx];
+        const originalIndex = servicesData.findIndex(orig => orig.name === s.name && orig.price === s.price);
+        const avgRating = await getServiceAverageRating(s);
+        const rating = avgRating;
+        const full = Math.floor(rating), half = rating % 1 >= 0.5, empty = 5 - full - (half?1:0);
+        let stars = '';
+        for (let i=0;i<full;i++) stars += '<i class="fas fa-star"></i>';
+        if (half) stars += '<i class="fas fa-star-half-alt"></i>';
+        for (let i=0;i<empty;i++) stars += '<i class="far fa-star"></i>';
+        const currency = s.currency === 'USD' ? '$' : 'ل.س';
+        
+        let mainImg = null;
+        if (s.images && s.images.length > 0 && s.images[0]) {
+          mainImg = getDirectImageUrl(s.images[0]);
+          if (mainImg) {
+            console.log('صورة الخدمة "' + s.name + '":', mainImg);
+          } else {
+            console.warn('لم نتمكن من تحويل رابط الصورة للخدمة "' + s.name + '":', s.images[0]);
+          }
+        }
+        if (!mainImg) mainImg = 'https://via.placeholder.com/400x200?text=لا+توجد+صورة';
+        
+        const whatsappUrl = `https://wa.me/963981055535?text=${encodeURIComponent(`السلام عليكم ، أريد خدمة: ${s.name}`)}`;
+        let khamsatBtn = '';
+        if (s.onKhamsat && s.khamsatLink) khamsatBtn = `<a href="${s.khamsatLink}" target="_blank" class="btn-order btn-khamsat"><i class="fab fa-korvue"></i> طلب عبر خمسات</a>`;
+        let trialBtn = '';
+        if (s.hasTrial && s.trialLink && s.trialLink.trim() !== '') {
+          trialBtn = `<a href="${s.trialLink}" target="_blank" class="btn-order btn-trial"><i class="fas fa-flask"></i> جرب الخدمة مجاناً</a>`;
+        }
+        html += `
+          <div class="service-card">
+            <img class="service-main-image" src="${mainImg}" onerror="this.src='https://via.placeholder.com/400x200?text=خطأ+في+الصورة'; console.error('فشل تحميل الصورة الرئيسية:', '${mainImg}', 'الرابط الأصلي:', '${s.images && s.images[0] ? s.images[0] : 'لا يوجد'}');">
+            <div class="service-content">
+              <h3 class="service-name">${escapeHtml(s.name)}</h3>
+              <div class="price-tag">${escapeHtml(s.price)} ${currency}</div>
+              <div class="info-row"><div><i class="fas fa-users"></i> ${escapeHtml(s.users)}</div><div class="rating-info"><span class="stars">${stars}</span> (${rating.toFixed(1)})</div></div>
+              <div class="description-wrapper"><div class="short-desc">${escapeHtml(getFirstWords(s.desc,15))}</div><button class="more-link" data-original-idx="${originalIndex}"><i class="fas fa-eye"></i> عرض المزيد</button></div>
+              <div class="card-buttons">
+                <a href="${whatsappUrl}" target="_blank" class="btn-order btn-whatsapp"><i class="fab fa-whatsapp"></i> طلب عبر واتساب</a>
+                ${khamsatBtn}
+                ${trialBtn}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      document.getElementById('services-container').innerHTML = html;
+      document.querySelectorAll('.more-link').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt(btn.getAttribute('data-original-idx'));
+          if (!isNaN(idx) && servicesData[idx]) showServiceDetail(idx);
+        });
+      });
+    }
+
+    async function showServiceDetail(index) {
+      currentServiceIndex = index;
+      const service = servicesData[index];
+      if (!service) return;
+      document.getElementById('detailName').innerText = service.name;
+      const currency = service.currency === 'USD' ? '$' : 'ل.س';
+      document.getElementById('detailPrice').innerHTML = `${escapeHtml(service.price)} ${currency}`;
+      document.getElementById('detailUsers').innerHTML = escapeHtml(service.users);
+      const avgRating = await getServiceAverageRating(service);
+      document.getElementById('detailRating').innerHTML = avgRating.toFixed(1);
+      document.getElementById('detailDesc').innerHTML = escapeHtml(service.desc).replace(/\n/g, '<br>');
+      
+      const imgContainer = document.getElementById('detailImagesContainer');
+      imgContainer.innerHTML = '';
+      if (service.images && service.images.length) {
+        let anyImage = false;
+        for (let img of service.images) {
+          if (img && img.trim()) {
+            const directUrl = getDirectImageUrl(img);
+            if (directUrl) {
+              anyImage = true;
+              const imgEl = document.createElement('img');
+              imgEl.src = directUrl;
+              imgEl.onerror = () => console.error('فشل تحميل صورة المعرض:', directUrl);
+              imgEl.onclick = () => showLightbox(directUrl);
+              imgContainer.appendChild(imgEl);
+            }
+          }
+        }
+        if (!anyImage) imgContainer.innerHTML = '<p>لا توجد صور متاحة</p>';
+      } else imgContainer.innerHTML = '<p>لا توجد صور متاحة</p>';
+      
+      const allReviews = await getAllReviews(service);
+      const reviewsContainer = document.getElementById('reviewsContainer');
+      if (allReviews.length) {
+        let revHtml = '';
+        allReviews.forEach(rev => {
+          let starHtml = ''; let starVal = rev.stars || 5;
+          for (let i=0; i<Math.floor(starVal); i++) starHtml += '<i class="fas fa-star"></i>';
+          if (starVal % 1 >= 0.5) starHtml += '<i class="fas fa-star-half-alt"></i>';
+          revHtml += `<div class="review-card"><div class="review-header"><span class="reviewer-name">${escapeHtml(rev.name)}</span><div class="review-stars">${starHtml}</div></div><div class="review-comment">${escapeHtml(rev.comment)}</div></div>`;
+        });
+        reviewsContainer.innerHTML = revHtml;
+      } else reviewsContainer.innerHTML = '<div class="no-reviews"><i class="far fa-smile-wink"></i> لا توجد آراء بعد، كن أول من يقيّم الخدمة!</div>';
+      
+      const whatsappUrl = `https://wa.me/963981055535?text=${encodeURIComponent(`أهلاً، أريد خدمة: ${service.name}`)}`;
+      const buttonsContainer = document.getElementById('detailButtonsContainer');
+      let buttonsHtml = `<a href="${whatsappUrl}" target="_blank" class="btn-whatsapp-large"><i class="fab fa-whatsapp"></i> اطلب عبر واتساب</a>`;
+      if (service.onKhamsat && service.khamsatLink) buttonsHtml += `<a href="${service.khamsatLink}" target="_blank" class="btn-khamsat-large"><i class="fab fa-korvue"></i> اطلب عبر خمسات</a>`;
+      if (service.hasTrial && service.trialLink && service.trialLink.trim() !== '') buttonsHtml += `<a href="${service.trialLink}" target="_blank" class="btn-trial-large"><i class="fas fa-flask"></i> جرب الخدمة مجاناً</a>`;
+      buttonsContainer.innerHTML = buttonsHtml;
+      
+      document.getElementById('servicesSection').style.display = 'none';
+      document.getElementById('detailView').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setupReviewForm(service.name);
+    }
+
+    function setupReviewForm(serviceName) {
+      const form = document.getElementById('customerReviewForm');
+      const msgDiv = document.getElementById('reviewFormMessage');
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('reviewerName').value.trim();
+        const email = document.getElementById('reviewerEmail').value.trim();
+        const countryCode = document.getElementById('countryCode').value;
+        const phoneNumber = document.getElementById('reviewerPhone').value.trim();
+        let fullPhone = phoneNumber ? countryCode + phoneNumber.replace(/^0+/, '') : '';
+        const comment = document.getElementById('reviewComment').value.trim();
+        const rating = parseInt(document.getElementById('reviewRating').value);
+        if (!name || !email || !comment) { msgDiv.innerHTML = '<span style="color:#e53e3e;">الرجاء ملء جميع الحقول المطلوبة</span>'; return; }
+        msgDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري الإرسال...';
+        try {
+          await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ service_name: serviceName, reviewer_name: name, reviewer_email: email, reviewer_phone: fullPhone, comment: comment, rating: rating }) });
+          msgDiv.innerHTML = '<span style="color:#10b981;">✓ تم إرسال تقييمك بنجاح، شكراً لك!</span>';
+          form.reset(); document.getElementById('reviewRating').value = '5';
+          setTimeout(async () => {
+            if (currentServiceIndex !== null) {
+              const service = servicesData[currentServiceIndex];
+              const newAvg = await getServiceAverageRating(service);
+              document.getElementById('detailRating').innerHTML = newAvg.toFixed(1);
+              const newReviews = await getAllReviews(service);
+              const rc = document.getElementById('reviewsContainer');
+              if (newReviews.length) {
+                let rh = '';
+                newReviews.forEach(rev => { let sh = ''; for (let i=0; i<Math.floor(rev.stars||5); i++) sh += '<i class="fas fa-star"></i>'; rh += `<div class="review-card"><div class="review-header"><span class="reviewer-name">${escapeHtml(rev.name)}</span><div class="review-stars">${sh}</div></div><div class="review-comment">${escapeHtml(rev.comment)}</div></div>`; });
+                rc.innerHTML = rh;
+              } else rc.innerHTML = '<div class="no-reviews">لا توجد آراء بعد</div>';
+              await renderServicesGridWithFilter();
+            }
+          }, 2000);
+        } catch(err) { msgDiv.innerHTML = '<span style="color:#e53e3e;">حدث خطأ في الاتصال</span>'; }
+      };
+    }
+    
+    // ========== إعداد نموذج الاستشارة المجانية ==========
+    function setupConsultModal() {
+      const modal = document.getElementById('consultModal');
+      const openBtns = document.querySelectorAll('#openConsultBtnHero, #openConsultBtnFilter');
+      const closeBtn = document.getElementById('closeModalBtn');
+      const form = document.getElementById('consultForm');
+      const msgDiv = document.getElementById('consultFormMessage');
+      
+      function openModal() { modal.classList.add('active'); document.body.style.overflow = 'hidden'; }
+      function closeModal() { modal.classList.remove('active'); document.body.style.overflow = ''; }
+      
+      openBtns.forEach(btn => btn.addEventListener('click', openModal));
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+      
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('consultName').value.trim();
+        const email = document.getElementById('consultEmail').value.trim();
+        const countryCode = document.getElementById('consultCountryCode').value;
+        const phoneNumber = document.getElementById('consultPhone').value.trim();
+        let fullPhone = phoneNumber ? countryCode + phoneNumber.replace(/^0+/, '') : '';
+        const consultType = document.getElementById('consultType').value;
+        const message = document.getElementById('consultMessage').value.trim();
+        
+        if (!name || !email || !consultType || !message) {
+          msgDiv.innerHTML = '<span style="color:#e53e3e;">الرجاء ملء جميع الحقول المطلوبة (*)</span>';
+          return;
+        }
+        
+        msgDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري إرسال طلب الاستشارة...';
+        
+        try {
+          await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'consultation',
+              name: name,
+              email: email,
+              phone: fullPhone,
+              consultType: consultType,
+              message: message,
+              timestamp: new Date().toISOString()
+            })
+          });
+          msgDiv.innerHTML = '<span style="color:#10b981;">✓ تم إرسال طلبك بنجاح! سيتواصل معك فريق الدعم قريباً.</span>';
+          form.reset();
+          setTimeout(() => { closeModal(); msgDiv.innerHTML = ''; }, 3000);
+        } catch(err) {
+          msgDiv.innerHTML = '<span style="color:#e53e3e;">حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى.</span>';
+        }
+      };
+    }
+
+    function hideDetailAndShowGrid() {
+      document.getElementById('detailView').classList.remove('active');
+      document.getElementById('servicesSection').style.display = 'block';
+      window.scrollTo({ top: document.getElementById('servicesSection').offsetTop - 20, behavior: 'smooth' });
+    }
+
+    async function fetchServices() {
+      try {
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('فشل تحميل الخدمات');
+        const data = await resp.json();
+        const rows = data.values || [];
+        let start = 0;
+        if (rows[0] && rows[0][0] && (rows[0][0].includes('اسم') || rows[0][0].includes('خدمة'))) start = 1;
+        const services = [];
+        for (let i = start; i < rows.length; i++) {
+          const row = rows[i];
+          if (!row || row.every(c=>!c)) continue;
+          const images = [row[8], row[9], row[10], row[11], row[12]].filter(u=>u && u.trim());
+          const hasTrialRaw = row[14] ? row[14].toString().trim() : '';
+          const hasTrial = (hasTrialRaw === 'نعم' || hasTrialRaw === 'true' || hasTrialRaw === '1');
+          const trialLink = row[15] ? row[15].trim() : '';
+          const category = row[16] ? row[16].trim() : '';
+          services.push({
+            name: row[0] || 'خدمة',
+            price: row[1] || '0',
+            users: row[2] || '0',
+            desc: row[3] || '',
+            ratingRaw: row[4] || '5',
+            currency: row[5] || 'SYP',
+            onKhamsat: (row[6] === 'نعم'),
+            khamsatLink: row[7] || '',
+            images: images,
+            reviewsRaw: row[13] || '',
+            hasTrial: hasTrial,
+            trialLink: trialLink,
+            category: category
+          });
+        }
+        servicesData = services;
+        await renderServicesGridWithFilter();
+      } catch(e) { document.getElementById('services-container').innerHTML = `<div class="error">خطأ: ${e.message}</div>`; }
+    }
+
+    function bindFilterEvents() {
+      document.getElementById('searchInput')?.addEventListener('input', () => renderServicesGridWithFilter());
+      document.getElementById('filterSelect')?.addEventListener('change', () => renderServicesGridWithFilter());
+    }
+
+    async function updateVisitorCounter() {
+      if (sessionStorage.getItem('visitorCounted') === 'true') return;
+      try {
+        const counterUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Amin3!B1?key=${API_KEY}`;
+        const resp = await fetch(counterUrl);
+        let currentCount = 0;
+        if (resp.ok) {
+          const data = await resp.json();
+          const value = data.values?.[0]?.[0];
+          currentCount = value ? parseInt(value) : 0;
+        }
+        const newCount = currentCount + 1;
+        await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'updateCounter', adminKey: 'admin123', counterValue: newCount }) });
+        sessionStorage.setItem('visitorCounted', 'true');
+      } catch(e) { console.warn('فشل تحديث العداد:', e); }
+    }
+
+    async function init() {
+      const categories = await loadCategoriesFromSheet();
+      populateComboBox(categories);
+      await fetchServices();
+      bindFilterEvents();
+      setupConsultModal();
+      document.getElementById('backToServicesBtn').addEventListener('click', hideDetailAndShowGrid);
+      document.getElementById('homeLink')?.addEventListener('click', (e) => { e.preventDefault(); if(document.getElementById('detailView').classList.contains('active')) hideDetailAndShowGrid(); window.scrollTo({top:0, behavior:'smooth'}); });
+      document.getElementById('servicesLink')?.addEventListener('click', (e) => { e.preventDefault(); if(document.getElementById('detailView').classList.contains('active')) hideDetailAndShowGrid(); document.getElementById('servicesSection').scrollIntoView({ behavior: 'smooth' }); });
+      document.getElementById('aboutLink')?.addEventListener('click', (e) => { e.preventDefault(); if(document.getElementById('detailView').classList.contains('active')) hideDetailAndShowGrid(); document.getElementById('about').scrollIntoView({ behavior: 'smooth' }); });
+      updateVisitorCounter();
+    }
+    init();
+  })();
+</script>
+</body>
+</html>
