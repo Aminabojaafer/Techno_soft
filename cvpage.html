@@ -2,8 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منشئ السيرة الذاتية المتوافقة مع ATS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>تكنوسوفت - منشئ السيرة الذاتية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
@@ -16,15 +18,93 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            color: #1a1a2e;
-            padding: 20px;
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #eef2f9 0%, #d9e2ef 100%);
+            color: #1e293b;
+            line-height: 1.5;
+            padding-bottom: 40px;
+        }
+
+        /* ===== نفس الهيدر من الصفحة الرئيسية ===== */
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+            border-radius: 0 0 32px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 12px 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: clamp(1.2rem, 5vw, 1.6rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #1f3c88, #4f46e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        nav a {
+            margin-right: 12px;
+            text-decoration: none;
+            color: #334155;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+        nav a:hover {
+            color: #2563eb;
+        }
+
+        @media (max-width: 480px) {
+            nav a {
+                margin-right: 8px;
+                font-size: 0.85rem;
+            }
+            .nav {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        /* ===== هيرو القسم ===== */
+        .hero {
+            background: linear-gradient(105deg, #1f3c88, #1e2f6e);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 40px;
+            margin: 24px 20px 40px;
+            max-width: 1300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.5rem, 6vw, 2.2rem);
+        }
+        .hero p {
+            font-size: clamp(0.85rem, 4vw, 1rem);
+            margin-bottom: 24px;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 0 20px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
@@ -34,18 +114,19 @@
         .editor-panel {
             background: white;
             padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-radius: 28px;
+            box-shadow: 0 15px 30px -12px rgba(0, 0, 0, 0.12);
             max-height: 90vh;
             overflow-y: auto;
         }
 
         .editor-panel h2 {
-            color: #1a1a2e;
-            border-bottom: 3px solid #2d6a4f;
+            color: #1f3c88;
+            border-bottom: 3px solid #f59e0b;
             padding-bottom: 10px;
             margin-bottom: 20px;
             font-size: 22px;
+            font-weight: 800;
         }
 
         .form-group {
@@ -57,30 +138,38 @@
             font-weight: 600;
             margin-bottom: 5px;
             font-size: 14px;
-            color: #2d6a4f;
+            color: #1f3c88;
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 10px 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 40px;
             font-size: 14px;
             transition: 0.3s;
-            font-family: inherit;
+            font-family: 'Cairo', sans-serif;
+            background: #f8fafc;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
-            border-color: #2d6a4f;
+            border-color: #1f3c88;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+            box-shadow: 0 0 0 3px rgba(31, 60, 136, 0.1);
         }
 
         .form-group textarea {
             resize: vertical;
             min-height: 60px;
+            border-radius: 20px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
         }
 
         .section-header {
@@ -90,34 +179,36 @@
             margin-top: 25px;
             margin-bottom: 15px;
             padding-bottom: 8px;
-            border-bottom: 2px dashed #2d6a4f;
+            border-bottom: 2px dashed #f59e0b;
         }
 
         .section-header h3 {
-            color: #1a1a2e;
+            color: #1f3c88;
             font-size: 18px;
+            font-weight: 700;
         }
 
         .btn {
             padding: 8px 18px;
             border: none;
-            border-radius: 30px;
-            font-weight: 600;
+            border-radius: 60px;
+            font-weight: 700;
             font-size: 13px;
             cursor: pointer;
             transition: 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            font-family: 'Cairo', sans-serif;
         }
 
         .btn-primary {
-            background: #2d6a4f;
+            background: linear-gradient(105deg, #1f3c88, #2d4a9e);
             color: white;
         }
         .btn-primary:hover {
-            background: #1b4332;
             transform: scale(1.03);
+            filter: brightness(1.05);
         }
 
         .btn-danger {
@@ -129,37 +220,39 @@
         }
 
         .btn-success {
-            background: #2a9d8f;
+            background: linear-gradient(105deg, #10b981, #059669);
             color: white;
         }
         .btn-success:hover {
-            background: #21867a;
+            transform: scale(1.03);
+            filter: brightness(1.05);
         }
 
         .btn-warning {
-            background: #f4a261;
+            background: linear-gradient(105deg, #f59e0b, #d97706);
             color: white;
         }
         .btn-warning:hover {
-            background: #e76f51;
+            transform: scale(1.03);
+            filter: brightness(1.05);
         }
 
         .btn-outline {
             background: transparent;
-            border: 2px solid #2d6a4f;
-            color: #2d6a4f;
+            border: 2px solid #1f3c88;
+            color: #1f3c88;
         }
         .btn-outline:hover {
-            background: #2d6a4f;
+            background: #1f3c88;
             color: white;
         }
 
         .item-card {
-            background: #f8f9fa;
+            background: #f8fafc;
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 20px;
             margin-bottom: 12px;
-            border-right: 4px solid #2d6a4f;
+            border-right: 4px solid #1f3c88;
             position: relative;
         }
 
@@ -187,7 +280,7 @@
             margin-bottom: 10px;
         }
 
-        /* ===== معاينة السيرة الذاتية (ATS Friendly) ===== */
+        /* ===== معاينة السيرة الذاتية ===== */
         .preview-panel {
             position: sticky;
             top: 20px;
@@ -209,23 +302,22 @@
         #cv-preview {
             background: white;
             padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-radius: 28px;
+            box-shadow: 0 15px 30px -12px rgba(0, 0, 0, 0.12);
             min-height: 700px;
-            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-family: 'Cairo', 'Arial', sans-serif;
             line-height: 1.6;
             color: #000000;
-            /* ATS-friendly: نص أسود، خلفية بيضاء، تنسيق بسيط */
         }
 
-        /* ===== تنسيق ATS ===== */
+        /* ===== تنسيق السيرة ===== */
         #cv-preview h1 {
             color: #000000;
             font-size: 28px;
-            border-bottom: 2px solid #000000;
+            border-bottom: 2px solid #1f3c88;
             padding-bottom: 8px;
             margin-bottom: 10px;
-            font-weight: bold;
+            font-weight: 800;
         }
 
         #cv-preview .subtitle {
@@ -247,13 +339,13 @@
         }
 
         #cv-preview h3 {
-            color: #000000;
+            color: #1f3c88;
             margin-top: 20px;
             margin-bottom: 10px;
             font-size: 18px;
             border-bottom: 1px solid #cccccc;
             padding-bottom: 5px;
-            font-weight: bold;
+            font-weight: 700;
         }
 
         #cv-preview .item {
@@ -266,7 +358,7 @@
             display: block;
             font-size: 15px;
             color: #000000;
-            font-weight: bold;
+            font-weight: 700;
         }
 
         #cv-preview .item .org-name {
@@ -311,56 +403,42 @@
             height: 100px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #2d6a4f;
+            border: 3px solid #1f3c88;
             margin-bottom: 10px;
         }
 
         .watermark {
             margin-top: 30px;
             padding-top: 15px;
-            border-top: 1px solid #ccc;
+            border-top: 2px solid #f59e0b;
             text-align: center;
             font-size: 12px;
             color: #555;
             direction: ltr;
-        }
-
-        .page-indicator {
-            background: #2d6a4f20;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: #2d6a4f;
             font-weight: 600;
-            display: inline-block;
-            margin-bottom: 10px;
         }
 
-        /* ===== استجابة ===== */
-        @media (max-width: 1100px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-            .preview-panel {
-                position: static;
-            }
-            .editor-panel {
-                max-height: none;
-            }
+        /* ===== نصائح ATS ===== */
+        .ats-tips {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #334155;
+            border-right: 4px solid #f59e0b;
         }
 
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2d6a4f;
-            border-radius: 10px;
+        .ats-tips strong {
+            color: #1f3c88;
         }
 
+        .ats-tips ul {
+            padding-right: 20px;
+            margin-top: 5px;
+        }
+
+        /* ===== عدادات ===== */
         .counter {
             font-size: 13px;
             color: #555;
@@ -369,8 +447,8 @@
 
         .ats-tag {
             display: inline-block;
-            background: #2d6a4f20;
-            color: #2d6a4f;
+            background: #1f3c8820;
+            color: #1f3c88;
             padding: 2px 12px;
             border-radius: 20px;
             font-size: 12px;
@@ -378,21 +456,20 @@
             margin-right: 10px;
         }
 
-        /* ===== نصائح ATS ===== */
-        .ats-tips {
-            background: #f8f9fa;
-            padding: 12px 15px;
+        /* ===== سكرول ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
             border-radius: 10px;
-            margin-top: 15px;
-            font-size: 13px;
-            color: #555;
-            border-right: 4px solid #2d6a4f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f3c88;
+            border-radius: 10px;
         }
 
-        .ats-tips strong {
-            color: #1a1a2e;
-        }
-
+        /* ===== تحميل ===== */
         .loading-overlay {
             display: none;
             position: fixed;
@@ -400,7 +477,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
             z-index: 9999;
             justify-content: center;
             align-items: center;
@@ -415,7 +493,7 @@
             width: 50px;
             height: 50px;
             border: 5px solid #f3f3f3;
-            border-top: 5px solid #2d6a4f;
+            border-top: 5px solid #f59e0b;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -435,16 +513,65 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* ===== استجابة ===== */
+        @media (max-width: 1100px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 0 16px;
+            }
+            .preview-panel {
+                position: static;
+            }
+            .editor-panel {
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                margin: 16px 12px 30px;
+                padding: 30px 16px;
+            }
+            #cv-preview {
+                padding: 20px;
+            }
+        }
+
+        /* ===== فوتير ===== */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #334155;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
     </style>
 </head>
 <body>
 
-    <!-- Overlay التحميل -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">جاري تصدير الملف...</div>
-    </div>
+    <!-- ===== الهيدر ===== -->
+    <header>
+        <div class="nav">
+            <div class="logo">تكنوسوفت للبرمجة والتصميم</div>
+            <nav>
+                <a href="https://github.com/Aminabojaafer/Techno_soft" id="homeLink"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="https://github.com/Aminabojaafer/Techno_soft/cvpage.html" id="cvBuilderLink"><i class="fas fa-file-alt"></i> منشئ السيرة</a>
+            </nav>
+        </div>
+    </header>
 
+    <!-- ===== الهيرو ===== -->
+    <section class="hero">
+        <h1>📄 منشئ السيرة الذاتية المتوافقة مع ATS</h1>
+        <p>أنشئ سيرتك الذاتية بسهولة واحترافية، مع تنسيق مثالي لأنظمة تتبع المتقدمين (ATS)</p>
+        <button class="btn btn-warning" onclick="document.querySelector('.editor-panel').scrollIntoView({behavior:'smooth'})" style="font-size:1rem; padding:14px 32px;">
+            <i class="fas fa-arrow-down"></i> ابدأ الآن
+        </button>
+    </section>
+
+    <!-- ===== المحتوى الرئيسي ===== -->
     <div class="container">
 
         <!-- ====== لوحة التحكم ====== -->
@@ -453,7 +580,7 @@
 
             <!-- الصورة الشخصية -->
             <div class="form-group">
-                <label>الصورة الشخصية</label>
+                <label><i class="fas fa-camera"></i> الصورة الشخصية</label>
                 <input type="file" id="profileImage" accept="image/*" onchange="handleImageUpload(event)">
             </div>
 
@@ -468,11 +595,11 @@
             </div>
             <div class="form-group">
                 <label>البريد الإلكتروني</label>
-                <input type="email" id="email" value="amin@example.com" oninput="updatePreview()">
+                <input type="email" id="email" value="amin.abojaafer.soft@gmail.com" oninput="updatePreview()">
             </div>
             <div class="form-group">
                 <label>رقم الهاتف</label>
-                <input type="text" id="phone" value="+963 123 456 789" oninput="updatePreview()">
+                <input type="text" id="phone" value="+963981055535" oninput="updatePreview()">
             </div>
             <div class="form-group">
                 <label>الموقع (مدينة، دولة)</label>
@@ -480,7 +607,7 @@
             </div>
             <div class="form-group">
                 <label>الملخص المهني (نبذة عنك - مهم لـ ATS)</label>
-                <textarea id="aboutMe" oninput="updatePreview()">مطور برمجيات ذو خبرة في تصميم وتطوير الأنظمة، وإدارة المشاريع التقنية، والتسويق الرقمي. أبحث عن فرصة لتطبيق مهاراتي في بيئة عمل ديناميكية.</textarea>
+                <textarea id="aboutMe" oninput="updatePreview()" rows="3">مطور برمجيات ذو خبرة في تصميم وتطوير الأنظمة، وإدارة المشاريع التقنية، والتسويق الرقمي. أبحث عن فرصة لتطبيق مهاراتي في بيئة عمل ديناميكية.</textarea>
             </div>
 
             <!-- ===== الخبرات ===== -->
@@ -514,7 +641,7 @@
             <!-- نصائح ATS -->
             <div class="ats-tips">
                 <strong>💡 نصائح لتوافق ATS:</strong>
-                <ul style="margin-top:5px; padding-right:20px;">
+                <ul>
                     <li>استخدم كلمات مفتاحية من الوصف الوظيفي</li>
                     <li>تجنب الصور والجداول والرسومات</li>
                     <li>استخدم تنسيقاً بسيطاً ونظيفاً</li>
@@ -526,10 +653,10 @@
         <!-- ====== معاينة وتصدير ====== -->
         <div class="preview-panel">
             <div class="preview-actions">
-                <button class="btn btn-success" onclick="exportPDF()">📄 PDF</button>
-                <button class="btn btn-warning" onclick="exportImage()">🖼️ صورة</button>
-                <button class="btn btn-primary" onclick="exportTXT()">📝 نص (TXT)</button>
-                <button class="btn btn-outline" onclick="resetAll()">🔄 إعادة تعيين</button>
+                <button class="btn btn-success" onclick="exportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+                <button class="btn btn-warning" onclick="exportImage()"><i class="fas fa-image"></i> صورة</button>
+                <button class="btn btn-primary" onclick="exportTXT()"><i class="fas fa-file-alt"></i> نص (TXT)</button>
+                <button class="btn btn-outline" onclick="resetAll()"><i class="fas fa-undo"></i> إعادة تعيين</button>
             </div>
 
             <div id="cv-preview">
@@ -538,13 +665,24 @@
         </div>
     </div>
 
+    <!-- ===== الفوتير ===== -->
+    <footer class="footer">
+        <p>© 2026 تكنوسوفت – جميع الحقوق محفوظة</p>
+    </footer>
+
+    <!-- ===== Overlay التحميل ===== -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">جاري تصدير الملف...</div>
+    </div>
+
     <script>
         // ===== البيانات =====
         let data = {
             name: 'أمين عبد القادر',
             title: 'مطور برمجيات | مسؤول تسويق',
-            email: 'amin@example.com',
-            phone: '+963 123 456 789',
+            email: 'amin.abojaafer.soft@gmail.com',
+            phone: '+963981055535',
             location: 'سوريا',
             about: 'مطور برمجيات ذو خبرة في تصميم وتطوير الأنظمة، وإدارة المشاريع التقنية، والتسويق الرقمي. أبحث عن فرصة لتطبيق مهاراتي في بيئة عمل ديناميكية.',
             profileImage: null,
@@ -568,18 +706,11 @@
                 startDate: '2018',
                 endDate: '2020',
                 desc: '• برنامج إدارة حضور وغياب المدرسين في معهد\n• تسجيل خيارات المدرسين وحضورهم\n• حساب ساعات العمل وتنظيم الخطة الدراسية\n• بوت تجارم فريدنسر العرب للبحث عن الوظائف\n• إدارة اشتراكات المستخدمين ونشر الإعلانات'
-            }, {
-                title: 'مطور برامج ومشاريع تقنية - إضافي',
-                org: 'مشاريع مستقلة',
-                startDate: '2016',
-                endDate: '2018',
-                desc: '• تطوير تطبيقات سطح المكتب\n• إدارة قواعد البيانات\n• تطوير واجهات المستخدم\n• اختبار البرمجيات\n• توثيق المشاريع'
             }];
 
             data.education = [
                 { title: 'دبلوم تمريض', org: 'مدرسة التمريض', year: '2010-2011', desc: 'لم أستطع إكماله بسبب دخول الثورة في 2011' },
-                { title: 'كلية الشريعة', org: 'جامعة حص الحر - ريف حص الشمالي', year: '2012-2015', desc: 'السنة الثالثة' },
-                { title: 'دورات تقنية', org: 'مراكز تدريب محلية', year: '2015-2016', desc: 'دورات في البرمجة وقواعد البيانات' }
+                { title: 'كلية الشريعة', org: 'جامعة حص الحر - ريف حص الشمالي', year: '2012-2015', desc: 'السنة الثالثة' }
             ];
 
             data.skills = [
@@ -590,9 +721,7 @@
                 'VB.NET',
                 'Python',
                 'إدارة المشاريع',
-                'التسويق الرقمي',
-                'تحليل البيانات',
-                'إدارة الفرق'
+                'التسويق الرقمي'
             ];
 
             data.certifications = [
@@ -601,9 +730,7 @@
                 'دورة فوتوشوب',
                 'دورة الستوليز (مبتدئ)',
                 'دورة أدوبي بريمير',
-                'دورة أفتر إفيكت',
-                'شهادة إدارة المشاريع',
-                'شهادة التسويق الرقمي'
+                'دورة أفتر إفيكت'
             ];
             data.profileImage = null;
         }
@@ -865,12 +992,10 @@
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
 
-                // إعدادات الهامش
                 const margin = 10;
                 const usableWidth = pageWidth - (margin * 2);
                 const usableHeight = pageHeight - (margin * 2);
 
-                // التقاط صورة للمحتوى بالكامل
                 const canvas = await html2canvas(element, {
                     scale: 2,
                     useCORS: true,
@@ -881,45 +1006,35 @@
                 const imgWidth = canvas.width;
                 const imgHeight = canvas.height;
 
-                // حساب نسبة العرض
                 const ratio = usableWidth / imgWidth;
                 const scaledHeight = imgHeight * ratio;
 
-                // حساب عدد الصفحات المطلوبة
                 const contentPerPage = usableHeight / ratio;
                 const totalPages = Math.ceil(imgHeight / contentPerPage);
 
-                // معالجة كل صفحة
                 for (let page = 0; page < totalPages; page++) {
                     const startY = page * contentPerPage;
                     const endY = Math.min((page + 1) * contentPerPage, imgHeight);
                     const pageHeightPx = endY - startY;
 
-                    // إنشاء Canvas مؤقت للصفحة الحالية
                     const pageCanvas = document.createElement('canvas');
                     pageCanvas.width = imgWidth;
                     pageCanvas.height = pageHeightPx;
                     const ctx = pageCanvas.getContext('2d');
 
-                    // رسم الجزء المطلوب من الصورة الأصلية
                     ctx.drawImage(canvas, 0, startY, imgWidth, pageHeightPx, 0, 0, imgWidth, pageHeightPx);
 
-                    // تحويل إلى صورة
                     const pageImgData = pageCanvas.toDataURL('image/png');
 
-                    // إضافة صفحة جديدة (باستثناء الصفحة الأولى)
                     if (page > 0) {
                         pdf.addPage();
                     }
 
-                    // حساب ارتفاع الصورة في PDF
                     const imgHeightMM = (pageHeightPx / imgHeight) * (scaledHeight);
                     const imgWidthMM = usableWidth;
 
-                    // إضافة الصورة مع توسيطها
                     pdf.addImage(pageImgData, 'PNG', margin, margin, imgWidthMM, imgHeightMM);
 
-                    // إضافة رقم الصفحة
                     pdf.setFontSize(8);
                     pdf.setTextColor(150);
                     pdf.text(`صفحة ${page + 1} من ${totalPages}`, pageWidth / 2, pageHeight - 5, { align: 'center' });
@@ -947,7 +1062,7 @@
             });
         }
 
-        // ===== تصدير TXT (أفضل توافق مع ATS) =====
+        // ===== تصدير TXT =====
         function exportTXT() {
             let content = `${data.name}\n`;
             content += `${'='.repeat(40)}\n`;
@@ -1001,7 +1116,6 @@
                 });
             }
 
-            // إضافة العلامة المائية في ملف TXT
             content += `\n${'='.repeat(50)}\n`;
             content += `تم تصدير هذا الملف بواسطة تكنوسوفت للحلول البرمجية - هاتف: +963981055535\n`;
 
@@ -1027,6 +1141,17 @@
             renderItems();
             updatePreview();
         }
+
+        // ===== روابط التنقل =====
+        document.getElementById('homeLink')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'https://tect-soft.github.io/';
+        });
+
+        document.getElementById('cvBuilderLink')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
 
         // ===== تهيئة الصفحة =====
         initDefaultData();
