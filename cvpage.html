@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منشئ السيرة الذاتية المتوافقة مع ATS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* ===== لوحة التحكم ===== */
+        .editor-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .editor-panel h2 {
+            color: #1a1a2e;
+            border-bottom: 3px solid #2d6a4f;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #2d6a4f;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #2d6a4f;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed #2d6a4f;
+        }
+
+        .section-header h3 {
+            color: #1a1a2e;
+            font-size: 18px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #2d6a4f;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1b4332;
+            transform: scale(1.03);
+        }
+
+        .btn-danger {
+            background: #e63946;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c1121f;
+        }
+
+        .btn-success {
+            background: #2a9d8f;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #21867a;
+        }
+
+        .btn-warning {
+            background: #f4a261;
+            color: white;
+        }
+        .btn-warning:hover {
+            background: #e76f51;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #2d6a4f;
+            color: #2d6a4f;
+        }
+        .btn-outline:hover {
+            background: #2d6a4f;
+            color: white;
+        }
+
+        .item-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-right: 4px solid #2d6a4f;
+            position: relative;
+        }
+
+        .item-card .remove-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #e63946;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .item-card .remove-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .items-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        /* ===== معاينة السيرة الذاتية (ATS Friendly) ===== */
+        .preview-panel {
+            position: sticky;
+            top: 20px;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .preview-actions .btn {
+            font-size: 14px;
+            padding: 10px 22px;
+        }
+
+        #cv-preview {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            min-height: 700px;
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            line-height: 1.6;
+            color: #000000;
+            /* ATS-friendly: نص أسود، خلفية بيضاء، تنسيق بسيط */
+        }
+
+        /* ===== تنسيق ATS ===== */
+        #cv-preview h1 {
+            color: #000000;
+            font-size: 28px;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        #cv-preview .subtitle {
+            color: #000000;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        #cv-preview .contact-info {
+            margin-bottom: 20px;
+            padding: 10px 0;
+            border-bottom: 1px solid #cccccc;
+            font-size: 14px;
+        }
+
+        #cv-preview .contact-info span {
+            margin-left: 20px;
+        }
+
+        #cv-preview h3 {
+            color: #000000;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+            border-bottom: 1px solid #cccccc;
+            padding-bottom: 5px;
+            font-weight: bold;
+        }
+
+        #cv-preview .item {
+            margin-bottom: 12px;
+            padding-right: 0;
+            border-right: none;
+        }
+
+        #cv-preview .item strong {
+            display: block;
+            font-size: 15px;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        #cv-preview .item .org-name {
+            font-weight: 600;
+            color: #000000;
+            font-size: 14px;
+        }
+
+        #cv-preview .item .date {
+            color: #333333;
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        #cv-preview .item .desc {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #000000;
+        }
+
+        #cv-preview .item ul {
+            list-style: disc;
+            padding-right: 20px;
+            margin-top: 5px;
+        }
+
+        #cv-preview .item ul li {
+            font-size: 14px;
+            color: #000000;
+            margin-bottom: 3px;
+        }
+
+        .cv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #2d6a4f;
+            margin-bottom: 10px;
+        }
+
+        .watermark {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ccc;
+            text-align: center;
+            font-size: 12px;
+            color: #555;
+            direction: ltr;
+        }
+
+        .page-indicator {
+            background: #2d6a4f20;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #2d6a4f;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* ===== استجابة ===== */
+        @media (max-width: 1100px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .preview-panel {
+                position: static;
+            }
+            .editor-panel {
+                max-height: none;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d6a4f;
+            border-radius: 10px;
+        }
+
+        .counter {
+            font-size: 13px;
+            color: #555;
+            margin-right: 8px;
+        }
+
+        .ats-tag {
+            display: inline-block;
+            background: #2d6a4f20;
+            color: #2d6a4f;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        /* ===== نصائح ATS ===== */
+        .ats-tips {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #555;
+            border-right: 4px solid #2d6a4f;
+        }
+
+        .ats-tips strong {
+            color: #1a1a2e;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #2d6a4f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay التحميل -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">جاري تصدير الملف...</div>
+    </div>
+
+    <div class="container">
+
+        <!-- ====== لوحة التحكم ====== -->
+        <div class="editor-panel">
+            <h2>📄 منشئ السيرة الذاتية <span class="ats-tag">متوافق مع ATS</span></h2>
+
+            <!-- الصورة الشخصية -->
+            <div class="form-group">
+                <label>الصورة الشخصية</label>
+                <input type="file" id="profileImage" accept="image/*" onchange="handleImageUpload(event)">
+            </div>
+
+            <!-- المعلومات الأساسية -->
+            <div class="form-group">
+                <label>الاسم الكامل</label>
+                <input type="text" id="fullName" value="أمين عبد القادر" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+                <label>المسمى الوظيفي</label>
+                <input type="text" id="jobTitle" value="مطور برمجيات | مسؤول تسويق" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" id="email" value="amin@example.com" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف</label>
+                <input type="text" id="phone" value="+963 123 456 789" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+                <label>الموقع (مدينة، دولة)</label>
+                <input type="text" id="location" value="سوريا" oninput="updatePreview()">
+            </div>
+            <div class="form-group">
+                <label>الملخص المهني (نبذة عنك - مهم لـ ATS)</label>
+                <textarea id="aboutMe" oninput="updatePreview()">مطور برمجيات ذو خبرة في تصميم وتطوير الأنظمة، وإدارة المشاريع التقنية، والتسويق الرقمي. أبحث عن فرصة لتطبيق مهاراتي في بيئة عمل ديناميكية.</textarea>
+            </div>
+
+            <!-- ===== الخبرات ===== -->
+            <div class="section-header">
+                <h3>💼 الخبرات المهنية <span class="counter" id="expCount">0</span></h3>
+                <button class="btn btn-primary" onclick="addItem('experience')">+ إضافة</button>
+            </div>
+            <div class="items-container" id="experienceContainer"></div>
+
+            <!-- ===== التعليم ===== -->
+            <div class="section-header">
+                <h3>🎓 التعليم <span class="counter" id="eduCount">0</span></h3>
+                <button class="btn btn-primary" onclick="addItem('education')">+ إضافة</button>
+            </div>
+            <div class="items-container" id="educationContainer"></div>
+
+            <!-- ===== المهارات ===== -->
+            <div class="section-header">
+                <h3>🛠️ المهارات <span class="counter" id="skillCount">0</span></h3>
+                <button class="btn btn-primary" onclick="addItem('skill')">+ إضافة</button>
+            </div>
+            <div class="items-container" id="skillContainer"></div>
+
+            <!-- ===== الشهادات والدورات ===== -->
+            <div class="section-header">
+                <h3>📜 الشهادات والدورات <span class="counter" id="certCount">0</span></h3>
+                <button class="btn btn-primary" onclick="addItem('certification')">+ إضافة</button>
+            </div>
+            <div class="items-container" id="certificationContainer"></div>
+
+            <!-- نصائح ATS -->
+            <div class="ats-tips">
+                <strong>💡 نصائح لتوافق ATS:</strong>
+                <ul style="margin-top:5px; padding-right:20px;">
+                    <li>استخدم كلمات مفتاحية من الوصف الوظيفي</li>
+                    <li>تجنب الصور والجداول والرسومات</li>
+                    <li>استخدم تنسيقاً بسيطاً ونظيفاً</li>
+                    <li>ركز على الإنجازات القابلة للقياس</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ====== معاينة وتصدير ====== -->
+        <div class="preview-panel">
+            <div class="preview-actions">
+                <button class="btn btn-success" onclick="exportPDF()">📄 PDF</button>
+                <button class="btn btn-warning" onclick="exportImage()">🖼️ صورة</button>
+                <button class="btn btn-primary" onclick="exportTXT()">📝 نص (TXT)</button>
+                <button class="btn btn-outline" onclick="resetAll()">🔄 إعادة تعيين</button>
+            </div>
+
+            <div id="cv-preview">
+                <!-- سيتم تعبئتها بواسطة JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== البيانات =====
+        let data = {
+            name: 'أمين عبد القادر',
+            title: 'مطور برمجيات | مسؤول تسويق',
+            email: 'amin@example.com',
+            phone: '+963 123 456 789',
+            location: 'سوريا',
+            about: 'مطور برمجيات ذو خبرة في تصميم وتطوير الأنظمة، وإدارة المشاريع التقنية، والتسويق الرقمي. أبحث عن فرصة لتطبيق مهاراتي في بيئة عمل ديناميكية.',
+            profileImage: null,
+            experience: [],
+            education: [],
+            skills: [],
+            certifications: []
+        };
+
+        // ===== تهيئة البيانات الافتراضية =====
+        function initDefaultData() {
+            data.experience = [{
+                title: 'مسؤول تسويق ومدير صفحات التواصل الاجتماعي',
+                org: 'شركة سوتر إنترناشونال سوريا',
+                startDate: '2020',
+                endDate: 'الحالي',
+                desc: '• إنشاء QR متوافق مع هيئة الزكاة والدخل السعودية\n• حفظ الفواتير بأرشيف خاص\n• تصدير الفواتير لملف PDF\n• نقطة بيع مطعم وجبات سريعة\n• ربط المطابخ مع نقطة البيع\n• تنظيم عمل الدليفري وعمال التوصيل'
+            }, {
+                title: 'مطور برامج ومشاريع تقنية',
+                org: 'مشاريع مستقلة',
+                startDate: '2018',
+                endDate: '2020',
+                desc: '• برنامج إدارة حضور وغياب المدرسين في معهد\n• تسجيل خيارات المدرسين وحضورهم\n• حساب ساعات العمل وتنظيم الخطة الدراسية\n• بوت تجارم فريدنسر العرب للبحث عن الوظائف\n• إدارة اشتراكات المستخدمين ونشر الإعلانات'
+            }, {
+                title: 'مطور برامج ومشاريع تقنية - إضافي',
+                org: 'مشاريع مستقلة',
+                startDate: '2016',
+                endDate: '2018',
+                desc: '• تطوير تطبيقات سطح المكتب\n• إدارة قواعد البيانات\n• تطوير واجهات المستخدم\n• اختبار البرمجيات\n• توثيق المشاريع'
+            }];
+
+            data.education = [
+                { title: 'دبلوم تمريض', org: 'مدرسة التمريض', year: '2010-2011', desc: 'لم أستطع إكماله بسبب دخول الثورة في 2011' },
+                { title: 'كلية الشريعة', org: 'جامعة حص الحر - ريف حص الشمالي', year: '2012-2015', desc: 'السنة الثالثة' },
+                { title: 'دورات تقنية', org: 'مراكز تدريب محلية', year: '2015-2016', desc: 'دورات في البرمجة وقواعد البيانات' }
+            ];
+
+            data.skills = [
+                'تصميم السوشيال ميديا',
+                'برمجة قواعد البيانات (SQL)',
+                'برمجة بوتات التجارم',
+                'تنظيم البيانات في إكسل',
+                'VB.NET',
+                'Python',
+                'إدارة المشاريع',
+                'التسويق الرقمي',
+                'تحليل البيانات',
+                'إدارة الفرق'
+            ];
+
+            data.certifications = [
+                'دورة إكسل المتقدم',
+                'دورة قواعد البيانات',
+                'دورة فوتوشوب',
+                'دورة الستوليز (مبتدئ)',
+                'دورة أدوبي بريمير',
+                'دورة أفتر إفيكت',
+                'شهادة إدارة المشاريع',
+                'شهادة التسويق الرقمي'
+            ];
+            data.profileImage = null;
+        }
+
+        // ===== معالجة رفع الصورة =====
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    data.profileImage = e.target.result;
+                    updatePreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ===== تحديث المعاينة =====
+        function updatePreview() {
+            const name = document.getElementById('fullName').value || 'الاسم الكامل';
+            const title = document.getElementById('jobTitle').value || 'المسمى الوظيفي';
+            const email = document.getElementById('email').value || '';
+            const phone = document.getElementById('phone').value || '';
+            const location = document.getElementById('location').value || '';
+            const about = document.getElementById('aboutMe').value || '';
+
+            data.name = name;
+            data.title = title;
+            data.email = email;
+            data.phone = phone;
+            data.location = location;
+            data.about = about;
+
+            let html = `
+                    <div class="cv-header">
+                        <div>
+                            ${data.profileImage ? `<img src="${data.profileImage}" class="profile-img" alt="صورة شخصية">` : ''}
+                            <h1>${name}</h1>
+                            <div class="subtitle">${title}</div>
+                        </div>
+                    </div>
+                `;
+
+            // معلومات الاتصال
+            let contactParts = [];
+            if (email) contactParts.push(`📧 ${email}`);
+            if (phone) contactParts.push(`📱 ${phone}`);
+            if (location) contactParts.push(`📍 ${location}`);
+            if (contactParts.length) {
+                html += `<div class="contact-info">${contactParts.join(' | ')}</div>`;
+            }
+
+            // الملخص المهني
+            if (about) {
+                html += `<div style="margin:15px 0; padding:10px 0; border-bottom:1px solid #cccccc;">${about}</div>`;
+            }
+
+            // الخبرات
+            if (data.experience.length) {
+                html += `<h3>الخبرات المهنية</h3>`;
+                data.experience.forEach(exp => {
+                    let dateStr = '';
+                    if (exp.startDate || exp.endDate) {
+                        dateStr = ` (${exp.startDate || ''} - ${exp.endDate || ''})`;
+                    }
+                    html += `
+                            <div class="item">
+                                <strong>${exp.title}</strong>
+                                <div class="org-name">${exp.org}${dateStr}</div>
+                                <div class="desc" style="white-space:pre-line;">${exp.desc}</div>
+                            </div>
+                        `;
+                });
+            }
+
+            // التعليم
+            if (data.education.length) {
+                html += `<h3>التعليم</h3>`;
+                data.education.forEach(edu => {
+                    html += `
+                            <div class="item">
+                                <strong>${edu.title}</strong>
+                                <div class="org-name">${edu.org}${edu.year ? ' (' + edu.year + ')' : ''}</div>
+                                <div class="desc">${edu.desc}</div>
+                            </div>
+                        `;
+                });
+            }
+
+            // المهارات
+            if (data.skills.length) {
+                html += `<h3>المهارات</h3><div class="item"><ul>`;
+                data.skills.forEach(s => {
+                    html += `<li>${s}</li>`;
+                });
+                html += `</ul></div>`;
+            }
+
+            // الشهادات والدورات
+            if (data.certifications.length) {
+                html += `<h3>الشهادات والدورات</h3><div class="item"><ul>`;
+                data.certifications.forEach(c => {
+                    html += `<li>${c}</li>`;
+                });
+                html += `</ul></div>`;
+            }
+
+            // ===== العلامة المائية =====
+            html += `
+                    <div class="watermark">
+                        تم تصدير هذا الملف بواسطة تكنوسوفت للحلول البرمجية - هاتف: +963981055535
+                    </div>
+                `;
+
+            document.getElementById('cv-preview').innerHTML = html;
+
+            // تحديث العدادات
+            document.getElementById('expCount').textContent = data.experience.length;
+            document.getElementById('eduCount').textContent = data.education.length;
+            document.getElementById('skillCount').textContent = data.skills.length;
+            document.getElementById('certCount').textContent = data.certifications.length;
+        }
+
+        // ===== إدارة العناصر =====
+        function renderItems() {
+            renderContainer('experience', data.experience, (item, idx) => `
+                    <div class="item-card">
+                        <button class="remove-btn" onclick="removeItem('experience', ${idx})">✕</button>
+                        <div class="form-group">
+                            <label>المسمى الوظيفي</label>
+                            <input type="text" value="${item.title}" oninput="updateItem('experience', ${idx}, 'title', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>الشركة / المؤسسة</label>
+                            <input type="text" value="${item.org}" oninput="updateItem('experience', ${idx}, 'org', this.value)">
+                        </div>
+                        <div class="form-group" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <div><label>من</label><input type="text" value="${item.startDate || ''}" placeholder="2020" oninput="updateItem('experience', ${idx}, 'startDate', this.value)"></div>
+                            <div><label>إلى</label><input type="text" value="${item.endDate || ''}" placeholder="الحالي" oninput="updateItem('experience', ${idx}, 'endDate', this.value)"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>الإنجازات والمهام</label>
+                            <textarea rows="4" oninput="updateItem('experience', ${idx}, 'desc', this.value)">${item.desc}</textarea>
+                        </div>
+                    </div>
+                `);
+
+            renderContainer('education', data.education, (item, idx) => `
+                    <div class="item-card">
+                        <button class="remove-btn" onclick="removeItem('education', ${idx})">✕</button>
+                        <div class="form-group">
+                            <label>الشهادة / التخصص</label>
+                            <input type="text" value="${item.title}" oninput="updateItem('education', ${idx}, 'title', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>المؤسسة التعليمية</label>
+                            <input type="text" value="${item.org}" oninput="updateItem('education', ${idx}, 'org', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>المدة (اختياري)</label>
+                            <input type="text" value="${item.year || ''}" placeholder="2010-2014" oninput="updateItem('education', ${idx}, 'year', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>الوصف</label>
+                            <textarea oninput="updateItem('education', ${idx}, 'desc', this.value)">${item.desc}</textarea>
+                        </div>
+                    </div>
+                `);
+
+            renderContainer('skill', data.skills, (item, idx) => `
+                    <div class="item-card">
+                        <button class="remove-btn" onclick="removeItem('skill', ${idx})">✕</button>
+                        <div class="form-group">
+                            <label>المهارة</label>
+                            <input type="text" value="${item}" oninput="updateItem('skill', ${idx}, null, this.value)">
+                        </div>
+                    </div>
+                `);
+
+            renderContainer('certification', data.certifications, (item, idx) => `
+                    <div class="item-card">
+                        <button class="remove-btn" onclick="removeItem('certification', ${idx})">✕</button>
+                        <div class="form-group">
+                            <label>الشهادة / الدورة</label>
+                            <input type="text" value="${item}" oninput="updateItem('certification', ${idx}, null, this.value)">
+                        </div>
+                    </div>
+                `);
+        }
+
+        function renderContainer(containerId, items, templateFn) {
+            const container = document.getElementById(containerId + 'Container');
+            if (!container) return;
+            container.innerHTML = items.map((item, idx) => templateFn(item, idx)).join('');
+            updatePreview();
+        }
+
+        // ===== إضافة عنصر =====
+        function addItem(type) {
+            const max = 20;
+            let arr;
+            let newItem;
+            if (type === 'experience') {
+                arr = data.experience;
+                newItem = { title: 'المسمى الوظيفي', org: 'اسم الشركة', startDate: '', endDate: '', desc: '• إنجاز 1\n• إنجاز 2' };
+            } else if (type === 'education') {
+                arr = data.education;
+                newItem = { title: 'التخصص', org: 'اسم المؤسسة', year: '', desc: 'الوصف...' };
+            } else if (type === 'skill') {
+                arr = data.skills;
+                newItem = 'مهارة جديدة';
+            } else { // certification
+                arr = data.certifications;
+                newItem = 'شهادة جديدة';
+            }
+
+            if (arr.length >= max) {
+                alert(`لا يمكن إضافة أكثر من ${max} عنصر في هذا القسم`);
+                return;
+            }
+
+            arr.push(newItem);
+            renderItems();
+            updatePreview();
+        }
+
+        // ===== حذف عنصر =====
+        function removeItem(type, idx) {
+            if (type === 'experience') data.experience.splice(idx, 1);
+            else if (type === 'education') data.education.splice(idx, 1);
+            else if (type === 'skill') data.skills.splice(idx, 1);
+            else if (type === 'certification') data.certifications.splice(idx, 1);
+            renderItems();
+            updatePreview();
+        }
+
+        // ===== تحديث عنصر =====
+        function updateItem(type, idx, field, value) {
+            if (type === 'experience') {
+                if (field) data.experience[idx][field] = value;
+            } else if (type === 'education') {
+                if (field) data.education[idx][field] = value;
+            } else if (type === 'skill') {
+                data.skills[idx] = value;
+            } else if (type === 'certification') {
+                data.certifications[idx] = value;
+            }
+            updatePreview();
+        }
+
+        // ===== تصدير PDF متعدد الصفحات =====
+        async function exportPDF() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('active');
+
+            try {
+                const element = document.getElementById('cv-preview');
+                const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+
+                // إعدادات الهامش
+                const margin = 10;
+                const usableWidth = pageWidth - (margin * 2);
+                const usableHeight = pageHeight - (margin * 2);
+
+                // التقاط صورة للمحتوى بالكامل
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+
+                // حساب نسبة العرض
+                const ratio = usableWidth / imgWidth;
+                const scaledHeight = imgHeight * ratio;
+
+                // حساب عدد الصفحات المطلوبة
+                const contentPerPage = usableHeight / ratio;
+                const totalPages = Math.ceil(imgHeight / contentPerPage);
+
+                // معالجة كل صفحة
+                for (let page = 0; page < totalPages; page++) {
+                    const startY = page * contentPerPage;
+                    const endY = Math.min((page + 1) * contentPerPage, imgHeight);
+                    const pageHeightPx = endY - startY;
+
+                    // إنشاء Canvas مؤقت للصفحة الحالية
+                    const pageCanvas = document.createElement('canvas');
+                    pageCanvas.width = imgWidth;
+                    pageCanvas.height = pageHeightPx;
+                    const ctx = pageCanvas.getContext('2d');
+
+                    // رسم الجزء المطلوب من الصورة الأصلية
+                    ctx.drawImage(canvas, 0, startY, imgWidth, pageHeightPx, 0, 0, imgWidth, pageHeightPx);
+
+                    // تحويل إلى صورة
+                    const pageImgData = pageCanvas.toDataURL('image/png');
+
+                    // إضافة صفحة جديدة (باستثناء الصفحة الأولى)
+                    if (page > 0) {
+                        pdf.addPage();
+                    }
+
+                    // حساب ارتفاع الصورة في PDF
+                    const imgHeightMM = (pageHeightPx / imgHeight) * (scaledHeight);
+                    const imgWidthMM = usableWidth;
+
+                    // إضافة الصورة مع توسيطها
+                    pdf.addImage(pageImgData, 'PNG', margin, margin, imgWidthMM, imgHeightMM);
+
+                    // إضافة رقم الصفحة
+                    pdf.setFontSize(8);
+                    pdf.setTextColor(150);
+                    pdf.text(`صفحة ${page + 1} من ${totalPages}`, pageWidth / 2, pageHeight - 5, { align: 'center' });
+                }
+
+                pdf.save('السيرة_الذاتية_ATS.pdf');
+            } catch (error) {
+                console.error('Error exporting PDF:', error);
+                alert('حدث خطأ أثناء تصدير PDF: ' + error.message);
+            } finally {
+                overlay.classList.remove('active');
+            }
+        }
+
+        // ===== تصدير صورة =====
+        function exportImage() {
+            const element = document.getElementById('cv-preview');
+            html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then((canvas) => {
+                const link = document.createElement('a');
+                link.download = 'السيرة_الذاتية_ATS.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                alert('حدث خطأ أثناء تصدير الصورة: ' + err);
+            });
+        }
+
+        // ===== تصدير TXT (أفضل توافق مع ATS) =====
+        function exportTXT() {
+            let content = `${data.name}\n`;
+            content += `${'='.repeat(40)}\n`;
+            content += `${data.title}\n\n`;
+
+            if (data.email) content += `البريد: ${data.email}\n`;
+            if (data.phone) content += `هاتف: ${data.phone}\n`;
+            if (data.location) content += `الموقع: ${data.location}\n`;
+            content += `\n`;
+
+            if (data.about) {
+                content += `الملخص المهني:\n${data.about}\n\n`;
+            }
+
+            if (data.experience.length) {
+                content += `الخبرات المهنية:\n${'-'.repeat(30)}\n`;
+                data.experience.forEach((exp, i) => {
+                    content += `\n${i+1}. ${exp.title}\n`;
+                    content += `   ${exp.org}`;
+                    if (exp.startDate || exp.endDate) {
+                        content += ` (${exp.startDate || ''} - ${exp.endDate || ''})`;
+                    }
+                    content += `\n   ${exp.desc.replace(/\n/g, '\n   ')}\n`;
+                });
+                content += `\n`;
+            }
+
+            if (data.education.length) {
+                content += `التعليم:\n${'-'.repeat(30)}\n`;
+                data.education.forEach((edu, i) => {
+                    content += `\n${i+1}. ${edu.title}\n`;
+                    content += `   ${edu.org}`;
+                    if (edu.year) content += ` (${edu.year})`;
+                    content += `\n   ${edu.desc}\n`;
+                });
+                content += `\n`;
+            }
+
+            if (data.skills.length) {
+                content += `المهارات:\n${'-'.repeat(30)}\n`;
+                data.skills.forEach(s => {
+                    content += `• ${s}\n`;
+                });
+                content += `\n`;
+            }
+
+            if (data.certifications.length) {
+                content += `الشهادات والدورات:\n${'-'.repeat(30)}\n`;
+                data.certifications.forEach(c => {
+                    content += `• ${c}\n`;
+                });
+            }
+
+            // إضافة العلامة المائية في ملف TXT
+            content += `\n${'='.repeat(50)}\n`;
+            content += `تم تصدير هذا الملف بواسطة تكنوسوفت للحلول البرمجية - هاتف: +963981055535\n`;
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'السيرة_الذاتية_ATS.txt';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        // ===== إعادة تعيين =====
+        function resetAll() {
+            if (!confirm('هل تريد استعادة البيانات الافتراضية؟')) return;
+            initDefaultData();
+            document.getElementById('fullName').value = data.name;
+            document.getElementById('jobTitle').value = data.title;
+            document.getElementById('email').value = data.email;
+            document.getElementById('phone').value = data.phone;
+            document.getElementById('location').value = data.location;
+            document.getElementById('aboutMe').value = data.about;
+            document.getElementById('profileImage').value = '';
+            renderItems();
+            updatePreview();
+        }
+
+        // ===== تهيئة الصفحة =====
+        initDefaultData();
+        renderItems();
+        updatePreview();
+
+        // مزامنة الحقول الأساسية
+        document.getElementById('fullName').addEventListener('input', updatePreview);
+        document.getElementById('jobTitle').addEventListener('input', updatePreview);
+        document.getElementById('email').addEventListener('input', updatePreview);
+        document.getElementById('phone').addEventListener('input', updatePreview);
+        document.getElementById('location').addEventListener('input', updatePreview);
+        document.getElementById('aboutMe').addEventListener('input', updatePreview);
+    </script>
+
+</body>
+</html>
